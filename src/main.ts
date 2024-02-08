@@ -15,5 +15,5 @@ console.log(table);
 
 const root = document.getElementById("root") as HTMLElement;
 let container = document.createElement("img");
-container.src = "../../public/trumps/CA.gif";
+container.src = "../../public/trumps/C2.gif";
 root.appendChild(container);
