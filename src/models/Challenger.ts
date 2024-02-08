@@ -16,16 +16,20 @@ export class Challenger implements Player {
     this.betAmount = 0;
   }
 
+  public updateStatus(challengerStatus: ChallengerStatus): void {
+    this.status = challengerStatus;
+  }
+
   public getHandScore(): number {
     let score = 0;
-    let NumOfAces = this.countAce();
+    let NumOfAce = this.countAce();
     const handSize = this.hand.length;
     for (let i = 0; i <= handSize - 1; i++) {
       if (this.hand[i].isFront) score += this.hand[i].getRankNumber();
     }
-    while (score > 21 && NumOfAces > 0) {
+    while (score > 21 && NumOfAce > 0) {
       score -= 10;
-      NumOfAces -= 1;
+      NumOfAce -= 1;
     }
     return score;
   }
@@ -51,23 +55,24 @@ export class Challenger implements Player {
   }
 
   public canDouble(): boolean {
-    return this.status !== "Initial" && this.betAmount * 2 <= this.chips;
+    return this.status === "Initial" && this.betAmount * 2 <= this.chips;
   }
 
   public stand(): void {
-    this.status = "Stand";
+    this.updateStatus("Stand");
   }
 
   public hit(card: Card): void {
     this.drawCard(card);
-    if (this.isBust()) this.status = "Bust";
-    else this.status = "Hit";
+    if (this.isBust()) this.updateStatus("Bust");
+    else this.updateStatus("Hit");
   }
 
-  public Double(card: Card): void {
+  public double(card: Card): void {
+    if (!this.canDouble()) return;
     this.betAmount *= 2;
     this.drawCard(card);
-    if (this.isBust()) this.status = "Bust";
-    else this.status = "Double";
+    if (this.isBust()) this.updateStatus("Bust");
+    else this.updateStatus("Double");
   }
 }

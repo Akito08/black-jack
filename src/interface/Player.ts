@@ -6,6 +6,7 @@ export interface Player {
   hand: Card[];
   status: ChallengerStatus | DealerStatus;
 
+  updateStatus(playerStatus: ChallengerStatus | DealerStatus): void;
   getHandScore(): number;
   countAce(): number;
   drawCard(card: Card): void;

@@ -12,16 +12,20 @@ export class Dealer implements Player {
     this.status = "Initial";
   }
 
+  public updateStatus(dealerStatus: DealerStatus): void {
+    this.status = dealerStatus;
+  }
+
   public getHandScore(): number {
     let score = 0;
-    let NumOfAces = this.countAce();
+    let NumOfAce = this.countAce();
     const handSize = this.hand.length;
     for (let i = 0; i <= handSize - 1; i++) {
       if (this.hand[i].isFront) score += this.hand[i].getRankNumber();
     }
-    while (score > 21 && NumOfAces > 0) {
+    while (score > 21 && NumOfAce > 0) {
       score -= 10;
-      NumOfAces -= 1;
+      NumOfAce -= 1;
     }
     return score;
   }
@@ -43,12 +47,12 @@ export class Dealer implements Player {
   }
 
   public stand(): void {
-    this.status = "Stand";
+    this.updateStatus("Stand");
   }
 
   public hit(card: Card): void {
     this.drawCard(card);
-    if (this.isBust()) this.status = "Bust";
-    else this.status = "Hit";
+    if (this.isBust()) this.updateStatus("Bust");
+    else this.updateStatus("Hit");
   }
 }
