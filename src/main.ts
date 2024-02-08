@@ -13,7 +13,12 @@ console.log(table.players[2].getHandScore());
 console.log(table.players[3].getHandScore());
 console.log(table);
 
-const root = document.getElementById("root") as HTMLElement;
-let container = document.createElement("img");
-container.src = "/trumps/C2.gif";
-root.appendChild(container);
+const userHand = document.getElementById("user-hands") as HTMLElement;
+let container1 = document.createElement("img");
+container1.src = "/trumps/C2.gif";
+container1.className = "h-32 w-24";
+userHand.appendChild(container1);
+let container2 = document.createElement("img");
+container2.src = "/trumps/HJ.gif";
+container2.className = "h-32 w-24";
+userHand.appendChild(container2);
