@@ -1,10 +1,11 @@
 import { Player } from "../interface/Player";
+import { ChallengerStatus } from "../types";
 import { Card } from "./Card";
 
 export class Challenger implements Player {
   readonly name: string;
   public hand: Card[];
-  public status: string;
+  public status: ChallengerStatus;
   public chips: number;
   public betAmount: number;
   constructor(name: string) {
@@ -50,7 +51,7 @@ export class Challenger implements Player {
   }
 
   public canDouble(): boolean {
-    return this.status !== "Initilal" && this.betAmount * 2 <= this.chips;
+    return this.status !== "Initial" && this.betAmount * 2 <= this.chips;
   }
 
   public stand(): void {

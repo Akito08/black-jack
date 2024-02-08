@@ -1,10 +1,11 @@
 import { Player } from "../interface/Player";
+import { DealerStatus } from "../types";
 import { Card } from "./Card";
 
 export class Dealer implements Player {
   readonly name: string;
   public hand: Card[];
-  public status: string;
+  public status: DealerStatus;
   constructor(name: string) {
     this.name = name;
     this.hand = [];
