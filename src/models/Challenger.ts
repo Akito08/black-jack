@@ -1,4 +1,4 @@
-import { Player } from "../interface/player";
+import { Player } from "../interface/Player";
 import { Card } from "./Card";
 
 export class Challenger implements Player {
@@ -33,7 +33,7 @@ export class Challenger implements Player {
     return this.hand.filter((card) => card.rank === "A").length;
   }
 
-  public getCard(card: Card): void {
+  public drawCard(card: Card): void {
     this.hand.push(card);
   }
 
@@ -58,14 +58,14 @@ export class Challenger implements Player {
   }
 
   public hit(card: Card): void {
-    this.getCard(card);
+    this.drawCard(card);
     if (this.isBust()) this.status = "Bust";
     else this.status = "Hit";
   }
 
   public Double(card: Card): void {
     this.betAmount *= 2;
-    this.getCard(card);
+    this.drawCard(card);
     if (this.isBust()) this.status = "Bust";
     else this.status = "Double";
   }

@@ -1,5 +1,5 @@
 import { Challenger } from "./Challenger";
-import { Player } from "../interface/player";
+import { Player } from "../interface/Player";
 import { Bot } from "../interface/Bot";
 
 export class BasicStrategyBot extends Challenger implements Player, Bot {

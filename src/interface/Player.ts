@@ -9,7 +9,7 @@ export interface Player {
 
   countAce(): number;
 
-  getCard(card: Card): void;
+  drawCard(card: Card): void;
 
   isBlackjack(): boolean;
 

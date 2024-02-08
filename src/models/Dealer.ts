@@ -1,4 +1,4 @@
-import { Player } from "../interface/player";
+import { Player } from "../interface/Player";
 import { Card } from "./Card";
 
 export class Dealer implements Player {
@@ -29,7 +29,7 @@ export class Dealer implements Player {
     return this.hand.filter((card) => card.rank === "A").length;
   }
 
-  public getCard(card: Card): void {
+  public drawCard(card: Card): void {
     this.hand.push(card);
   }
 
@@ -46,7 +46,7 @@ export class Dealer implements Player {
   }
 
   public hit(card: Card): void {
-    this.getCard(card);
+    this.drawCard(card);
     if (this.isBust()) this.status = "Bust";
     else this.status = "Hit";
   }
