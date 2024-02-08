@@ -34,6 +34,11 @@ export class Dealer implements Player {
     return this.hand.filter((card) => card.rank === "A").length;
   }
 
+  public flipCard(): void {
+    if (this.hand.length !== 2) return;
+    this.hand[1].isFront = !this.hand[1].isFront;
+  }
+
   public drawCard(card: Card): void {
     this.hand.push(card);
   }
