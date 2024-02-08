@@ -12,3 +12,8 @@ console.log(table.players[1].getHandScore());
 console.log(table.players[2].getHandScore());
 console.log(table.players[3].getHandScore());
 console.log(table);
+
+const root = document.getElementById("root") as HTMLElement;
+let container = document.createElement("img");
+container.src = "../../public/trumps/CA.gif";
+root.appendChild(container);
