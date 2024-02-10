@@ -1,9 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  mod: "jit",
-  content: ["index.html", "src/main.ts"],
+  mode: "jit",
+  content: ["index.html", "./src/**/*.{html,js,ts,jsx,tsx}"],
   theme: {
-    extend: { brightness: ["hover"] },
+    extend: {
+      brightness: ["hover"],
+    },
   },
   plugins: [],
 };
