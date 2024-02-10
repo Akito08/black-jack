@@ -80,9 +80,9 @@ export class View {
     ) as HTMLElement;
     const resetButton = document.getElementById("reset-button") as HTMLElement;
 
-    document.querySelectorAll(".chip-button").forEach((button) => {
-      button.addEventListener("click", () => {
-        const chipValue = Number(button.getAttribute("chip-value"));
+    document.querySelectorAll(".chip-button").forEach((chipButton) => {
+      chipButton.addEventListener("click", () => {
+        const chipValue = Number(chipButton.getAttribute("chip-value"));
         user.makeBet(chipValue);
         updateDisplay();
       });
