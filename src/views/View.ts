@@ -4,15 +4,13 @@ import { User } from "../models/User";
 export class View {
   root: HTMLElement;
   table: Table;
-  constructor() {
+  constructor(table: Table) {
     this.root = document.getElementById("root") as HTMLElement;
-    this.table = new Table("Black Jack", "akito");
+    this.table = table;
   }
 
   renderBettingModal() {
-    const user = this.table.players.find(
-      (player) => player instanceof User
-    ) as User;
+    const user = this.table.getUser() as User;
 
     this.root.innerHTML = `
     <section id="betting-modal">
@@ -70,32 +68,18 @@ export class View {
         </div>
       </section>
     `;
+  }
 
+  updateBetAndChipsDisplay(user: User) {
     const userBetAmountElement = document.getElementById(
       "user-bet"
     ) as HTMLElement;
-
     const userChipsElement = document.getElementById(
       "user-chips"
     ) as HTMLElement;
-    const resetButton = document.getElementById("reset-button") as HTMLElement;
-
-    document.querySelectorAll(".chip-button").forEach((chipButton) => {
-      chipButton.addEventListener("click", () => {
-        const chipValue = Number(chipButton.getAttribute("chip-value"));
-        user.makeBet(chipValue);
-        updateDisplay();
-      });
-    });
-
-    resetButton.addEventListener("click", () => {
-      user.resetBet();
-      updateDisplay();
-    });
-
-    const updateDisplay = () => {
+    if (userBetAmountElement && userChipsElement) {
       userBetAmountElement.innerText = `You bet: $${user.betAmount}`;
       userChipsElement.innerText = `You have $${user.chips} chips`;
-    };
+    }
   }
 }
