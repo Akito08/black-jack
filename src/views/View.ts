@@ -1,7 +1,8 @@
 import { Table } from "../models/Table";
 import { User } from "../models/User";
-import { Dealer } from "../models/Dealer";
-import { getUserInTable, getDealerInTable } from "../utils/helper";
+import { Card } from "../models/Card";
+import { getUserInTable, getDealerInTable, sleep } from "../utils/helper";
+import { Player } from "../interface/Player";
 
 export class View {
   root: HTMLElement;
@@ -130,15 +131,15 @@ export class View {
       <!-- User ↓ -->
       <div class="w-1/3 flex flex-col items-center">
         <h3 class="text-white my-2 font-bold text-2xl">${user.name}</h3>
-        <div class="text-white">Initial</div>
+        <div id="user-status" class="text-white">Initial</div>
         <div class="flex justify-center items-center space-x-4 mb-4">
-          <div class="text-white">HandScore: ${user.getHandScore()}</div>
-          <div class="text-white">Bet: ${user.betAmount}</div>
-          <div class="text-white">Chips: ${user.chips}</div>
+          <div id="user-hand-score" class="text-white">HandScore: ${user.getHandScore()}</div>
+          <div id="user-bet-amount"  class="text-white">Bet: ${
+            user.betAmount
+          }</div>
+          <div id="user-chips" class="text-white">Chips: ${user.chips}</div>
         </div>
-        <div class="flex space-x-2 justify-center items-center">
-          <img src="/trumps/CQ.gif" class="h-32 w-24" />
-          <img src="/trumps/HA.gif" class="h-32 w-24" />
+        <div id="user-hand"class="flex space-x-2 justify-center items-center">
         </div>
       </div>
       <!-- User ↑ -->
@@ -186,5 +187,80 @@ export class View {
     </div>
   </section>
     `;
+  }
+
+  initialPlayerHandDisplay(player: Player) {
+    const PlayerHandsElememnt = document.getElementById(
+      "user-hand"
+    ) as HTMLElement;
+    for (let card of player.hand) {
+      let container = document.createElement("img");
+      container.src = container.className = "h-32 w-24";
+      container.src = `/trumps/${card.suit}${card.rank}.gif`;
+      PlayerHandsElememnt.appendChild(container);
+    }
+  }
+  updatePlayerInfoDisplay(user: User, card: Card) {
+    this.updatePlayerStatus(user);
+    this.updateHandScore(user);
+    this.updateBetAmount(user);
+    this.updateChips(user);
+    this.addCardDispay(card);
+  }
+
+  public updatePlayerStatus(user: User) {
+    const playerStatusElement = document.getElementById(
+      "user-status"
+    ) as HTMLElement;
+    playerStatusElement.innerHTML = `${user.status}`;
+  }
+
+  private updateHandScore(user: User) {
+    const playerHandScoreElement = document.getElementById(
+      "user-hand-score"
+    ) as HTMLElement;
+    playerHandScoreElement.innerText = `HandScore: ${user.getHandScore()}`;
+  }
+
+  private updateBetAmount(user: User) {
+    const playerBetAmountElement = document.getElementById(
+      "user-bet-amount"
+    ) as HTMLElement;
+    playerBetAmountElement.innerText = `Bet: ${user.betAmount}`;
+  }
+
+  private updateChips(user: User) {
+    const playerChipsElement = document.getElementById(
+      "user-chips"
+    ) as HTMLElement;
+    playerChipsElement.innerText = `Chips: ${user.chips}`;
+  }
+
+  private addCardDispay(card: Card) {
+    const playerHandsElement = document.getElementById(
+      "user-hand"
+    ) as HTMLElement;
+    let container = document.createElement("img");
+    container.src = `/trumps/${card.suit}${card.rank}.gif`;
+    container.className = "h-32 w-24";
+    playerHandsElement.appendChild(container);
+  }
+
+  public async disableDoubleButton() {
+    await sleep(800);
+    const doubleButton = document.getElementById(
+      "double-button"
+    ) as HTMLButtonElement;
+    doubleButton.disabled = true;
+    doubleButton.classList.add("opacity-50");
+  }
+
+  public async disableAllActionButtons() {
+    await sleep(800);
+    document.querySelectorAll(".action-button").forEach((element) => {
+      const actionButton = element as HTMLButtonElement;
+      actionButton.disabled = true;
+      actionButton.classList.add("opacity-50");
+    });
   }
 }

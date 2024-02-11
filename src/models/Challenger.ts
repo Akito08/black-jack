@@ -70,6 +70,7 @@ export class Challenger implements Player {
 
   public double(card: Card): void {
     if (!this.canDouble()) return;
+    this.chips -= this.betAmount;
     this.betAmount *= 2;
     this.drawCard(card);
     if (this.isBust()) this.updateStatus("Bust");

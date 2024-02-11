@@ -1,17 +1,23 @@
 import { Table } from "../models/Table";
+import { Deck } from "../models/Deck";
 import { View } from "../views/view";
 import { getUserInTable } from "../utils/helper";
+import { Player } from "../interface/Player";
+import { User } from "../models/User";
+import { BasicStrategyBot } from "../models/BasicStrategyBot";
 
 export class Controller {
   startPage = document.getElementById("start-page") as HTMLElement;
   gameType: string;
   userName: string;
   table: Table;
+  deck: Deck;
   view: View;
   constructor(gameType: string, userName: string) {
     this.gameType = gameType;
     this.userName = userName;
     this.table = new Table(gameType, userName);
+    this.deck = this.table.deck;
     this.startPage.classList.add("hidden");
     this.view = new View(this.table);
     //this.view.renderBettingModal();
@@ -20,6 +26,12 @@ export class Controller {
     //actingPageのテスト
     this.table.assignPlayerHands();
     this.view.renderActingPage();
+    const user = getUserInTable(this.table);
+    this.view.initialPlayerHandDisplay(user);
+    this.setupHitAction(user);
+    this.setupDoubleAction(user);
+    this.setupStandAction(user);
+    //this.view.updatePlayerHandDisplay(user);
   }
 
   setupBetActions() {
@@ -50,5 +62,45 @@ export class Controller {
       user.makeBet(chipValue);
       this.view.updateBetAndChipsDisplay(user);
     }
+  }
+
+  setupStandAction(player: Player) {
+    const user = getUserInTable(this.table);
+    const standButton = document.getElementById(
+      "stand-button"
+    ) as HTMLButtonElement;
+    standButton.addEventListener("click", () => {
+      player.stand();
+      this.view.updatePlayerStatus(user);
+      this.view.disableAllActionButtons();
+    });
+  }
+
+  setupHitAction(player: Player) {
+    const user = getUserInTable(this.table);
+    const hitButton = document.getElementById(
+      "hit-button"
+    ) as HTMLButtonElement;
+    hitButton.addEventListener("click", () => {
+      const card = this.deck.drawOne();
+      player.hit(card);
+      console.log("Hitです");
+      this.view.updatePlayerInfoDisplay(user, card);
+      if (user.isBust()) this.view.disableAllActionButtons();
+      else this.view.disableDoubleButton();
+    });
+  }
+
+  setupDoubleAction(player: User | BasicStrategyBot) {
+    const user = getUserInTable(this.table);
+    const doubleButton = document.getElementById(
+      "double-button"
+    ) as HTMLButtonElement;
+    doubleButton.addEventListener("click", () => {
+      const card = this.deck.drawOne();
+      player.double(card);
+      this.view.updatePlayerInfoDisplay(user, card);
+      this.view.disableAllActionButtons();
+    });
   }
 }

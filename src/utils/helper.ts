@@ -9,3 +9,7 @@ export const getUserInTable = (table: Table) => {
 export const getDealerInTable = (table: Table) => {
   return table.players.find((player) => player instanceof Dealer) as Dealer;
 };
+
+export const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
