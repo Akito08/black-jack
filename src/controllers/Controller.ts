@@ -5,6 +5,7 @@ import { getUserInTable } from "../utils/helper";
 import { Player } from "../interface/Player";
 import { User } from "../models/User";
 import { BasicStrategyBot } from "../models/BasicStrategyBot";
+//import { PerfectStrategyBot } from "../models/PerfectStrategyBot";
 
 export class Controller {
   startPage = document.getElementById("start-page") as HTMLElement;
@@ -73,6 +74,7 @@ export class Controller {
       player.stand();
       this.view.updatePlayerStatus(user);
       this.view.disableAllActionButtons();
+      //this.allBotsMakeActions();
     });
   }
 
@@ -84,10 +86,11 @@ export class Controller {
     hitButton.addEventListener("click", () => {
       const card = this.deck.drawOne();
       player.hit(card);
-      console.log("Hitです");
       this.view.updatePlayerInfoDisplay(user, card);
-      if (user.isBust()) this.view.disableAllActionButtons();
-      else this.view.disableDoubleButton();
+      if (user.isBust()) {
+        this.view.disableAllActionButtons();
+        //this.allBotsMakeActions();
+      } else this.view.disableDoubleButton();
     });
   }
 
@@ -101,6 +104,7 @@ export class Controller {
       player.double(card);
       this.view.updatePlayerInfoDisplay(user, card);
       this.view.disableAllActionButtons();
+      //this.allBotsMakeActions();
     });
   }
 }

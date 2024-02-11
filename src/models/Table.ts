@@ -1,5 +1,6 @@
 import { Deck } from "./Deck";
 import { BasicStrategyBot } from "./BasicStrategyBot";
+import { PerfectStrategyBot } from "./PerfectStrategyBot";
 import { User } from "./User";
 import { Dealer } from "./Dealer";
 import { ActiveChallengerStatus } from "../types";
@@ -21,15 +22,15 @@ export class Table {
     this.players = [];
     this.players.push(new BasicStrategyBot("Bot1"));
     this.players.push(new User(userName));
-    this.players.push(new BasicStrategyBot("Bot2"));
+    this.players.push(new PerfectStrategyBot("Bot2"));
     this.players.push(new Dealer("Dealer"));
   }
 
-  public botMakeBet(): void {
-    for (let player of this.players) {
-      if (player instanceof User) continue;
-      if (player instanceof Dealer) continue;
-      player.makeBet();
+  public allBotsMakeBet(): void {
+    for (let bot of this.players) {
+      if (bot instanceof User) continue;
+      if (bot instanceof Dealer) continue;
+      bot.makeBet();
     }
   }
 
@@ -37,6 +38,16 @@ export class Table {
     for (let player of this.players) {
       player.drawCard(this.deck.drawOne());
       player.drawCard(this.deck.drawOne());
+    }
+  }
+
+  public botAction() {
+    for (let bot of this.players) {
+      if (bot instanceof User) continue;
+      if (bot instanceof Dealer) continue;
+      while (bot.getHandScore() <= 16) {
+        bot.hit(this.deck.drawOne());
+      }
     }
   }
 

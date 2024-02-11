@@ -1,8 +1,17 @@
 import { Table } from "../models/Table";
 import { User } from "../models/User";
 import { Card } from "../models/Card";
-import { getUserInTable, getDealerInTable, sleep } from "../utils/helper";
+import {
+  getUserInTable,
+  getDealerInTable,
+  getBasicStrategyBotInTable,
+  getPerfectStrategyBotInTable,
+  sleep,
+} from "../utils/helper";
 import { Player } from "../interface/Player";
+import { BasicStrategyBot } from "../models/BasicStrategyBot";
+import { PerfectStrategyBot } from "../models/PerfectStrategyBot";
+import { Dealer } from "../models/Dealer";
 
 export class View {
   root: HTMLElement;
@@ -87,8 +96,10 @@ export class View {
   }
 
   renderActingPage() {
-    const dealer = getDealerInTable(this.table);
     const user = getUserInTable(this.table);
+    const bot1 = getBasicStrategyBotInTable(this.table);
+    const bot2 = getPerfectStrategyBotInTable(this.table);
+    const dealer = getDealerInTable(this.table);
     this.root.innerHTML = `
     <section id="acting-page">
     <!-- Dealer ↓ -->
@@ -100,7 +111,9 @@ export class View {
         ${dealer.name}
       </h3>
       <div id="dealer-status" class="text-white">${dealer.status}</div>
-      <div id="dealer-hand-score" class="text-white mb-4">HandScore: ${dealer.getHandScore()}</div>
+      <div id="dealer-hand-score" class="text-white mb-4">
+        HandScore: ${dealer.getHandScore()}
+      </div>
       <div
         id="dealer-hands"
         class="flex space-x-2 justify-center items-center"
@@ -114,16 +127,22 @@ export class View {
     <div class="w-full flex justify-around">
       <!-- Bot1 ↓ -->
       <div class="w-1/3 flex flex-col items-center">
-        <h3 class="text-white my-2 font-bold text-2xl">Bot1</h3>
-        <div class="text-white">Initial</div>
+        <h3 class="text-white my-2 font-bold text-2xl">${bot1.name}</h3>
+        <div id="bot1-status" class="text-white">${bot1.status}</div>
         <div class="flex justify-center items-center space-x-4 mb-4">
-          <div class="text-white">HandScore: 0</div>
-          <div class="text-white">Bet: 0</div>
-          <div class="text-white">Chips: 500</div>
+          <div id="bot1-hand-score" class="text-white">
+            HandScore: ${bot1.getHandScore()}
+          </div>
+          <div id="bot1-bet-amount" class="text-white">
+            Bet: ${bot1.betAmount}
+          </div>
+          <div id="bot1-chips" class="text-white">Chips: ${bot1.chips}</div>
         </div>
-        <div class="flex space-x-2 justify-center items-center">
-          <img src="/trumps/CQ.gif" class="h-32 w-24" />
-          <img src="/trumps/HA.gif" class="h-32 w-24" />
+        <div
+          id="bot1-hand"
+          class="flex space-x-2 justify-center items-center"
+        >
+          <!-- Bot1の手札を表示 -->
         </div>
       </div>
       <!-- Bot1 ↑ -->
@@ -131,36 +150,57 @@ export class View {
       <!-- User ↓ -->
       <div class="w-1/3 flex flex-col items-center">
         <h3 class="text-white my-2 font-bold text-2xl">${user.name}</h3>
-        <div id="user-status" class="text-white">Initial</div>
-        <div class="flex justify-center items-center space-x-4 mb-4">
-          <div id="user-hand-score" class="text-white">HandScore: ${user.getHandScore()}</div>
-          <div id="user-bet-amount"  class="text-white">Bet: ${
-            user.betAmount
-          }</div>
-          <div id="user-chips" class="text-white">Chips: ${user.chips}</div>
+        <div id="${user.name.toLowerCase()}-status" class="text-white">
+          Initial
         </div>
-        <div id="user-hand"class="flex space-x-2 justify-center items-center">
+        <div class="flex justify-center items-center space-x-4 mb-4">
+          <div
+            id="${user.name.toLowerCase()}-hand-score"
+            class="text-white"
+          >
+            HandScore: ${user.getHandScore()}
+          </div>
+          <div
+            id="${user.name.toLowerCase()}-bet-amount"
+            class="text-white"
+          >
+            Bet: ${user.betAmount}
+          </div>
+          <div id="${user.name.toLowerCase()}-chips" class="text-white">
+            Chips: ${user.chips}
+          </div>
+        </div>
+        <div
+          id="${user.name.toLowerCase()}-hand"
+          class="flex space-x-2 justify-center items-center"
+        >
+          <!-- Userの手札を表示 -->
         </div>
       </div>
       <!-- User ↑ -->
 
-      <!-- Bot2↓ -->
+      <!-- Bot2 ↓ -->
       <div class="w-1/3 flex flex-col items-center">
-        <h3 class="text-white my-2 font-bold text-2xl">Bot2</h3>
-        <div class="text-white">Initial</div>
+        <h3 class="text-white my-2 font-bold text-2xl">${bot2.name}</h3>
+        <div id="bot2-status" class="text-white">${bot2.status}</div>
         <div class="flex justify-center items-center space-x-4 mb-4">
-          <div class="text-white">HandScore: 0</div>
-          <div class="text-white">Bet: 0</div>
-          <div class="text-white">Chips: 500</div>
+          <div id="bot2-hand-score" class="text-white">
+            HandScore: ${bot2.getHandScore()}
+          </div>
+          <div id="bot2-bet-amount" class="text-white">
+            Bet: ${bot2.betAmount}
+          </div>
+          <div id="bot2-chips" class="text-white">Chips: ${bot2.chips}</div>
         </div>
-        <div class="flex space-x-2 justify-center items-center">
-          <img src="/trumps/CQ.gif" class="h-32 w-24" />
-          <img src="/trumps/HA.gif" class="h-32 w-24" />
+        <div
+          id="bot2-hand"
+          class="flex space-x-2 justify-center items-center"
+        >
+          <!-- Bot2の手札を表示 -->
         </div>
       </div>
-      <!-- Bot2↑ -->
+      <!-- Bot2 ↑ -->
     </div>
-
     <div
       class="text-center h-1/4 w-full absolute bottom-0 left-1/2 -translate-x-1/2 border-t border-black bg-green-800"
     >
@@ -191,7 +231,7 @@ export class View {
 
   initialPlayerHandDisplay(player: Player) {
     const PlayerHandsElememnt = document.getElementById(
-      "user-hand"
+      `${player.name}-hand`
     ) as HTMLElement;
     for (let card of player.hand) {
       let container = document.createElement("img");
@@ -200,45 +240,48 @@ export class View {
       PlayerHandsElememnt.appendChild(container);
     }
   }
-  updatePlayerInfoDisplay(user: User, card: Card) {
-    this.updatePlayerStatus(user);
-    this.updateHandScore(user);
-    this.updateBetAmount(user);
-    this.updateChips(user);
-    this.addCardDispay(card);
+  updatePlayerInfoDisplay(
+    player: User | BasicStrategyBot | PerfectStrategyBot,
+    card: Card
+  ) {
+    this.updatePlayerStatus(player);
+    this.updateHandScore(player);
+    this.updateBetAmount(player);
+    this.updateChips(player);
+    this.addCardDispay(player, card);
   }
 
-  public updatePlayerStatus(user: User) {
+  public updatePlayerStatus(player: User | BasicStrategyBot | Dealer) {
     const playerStatusElement = document.getElementById(
-      "user-status"
+      `${player.name.toLowerCase()}-status`
     ) as HTMLElement;
-    playerStatusElement.innerHTML = `${user.status}`;
+    playerStatusElement.innerHTML = `${player.status}`;
   }
 
-  private updateHandScore(user: User) {
+  private updateHandScore(player: User | BasicStrategyBot | Dealer) {
     const playerHandScoreElement = document.getElementById(
-      "user-hand-score"
+      `${player.name.toLowerCase()}-hand-score`
     ) as HTMLElement;
-    playerHandScoreElement.innerText = `HandScore: ${user.getHandScore()}`;
+    playerHandScoreElement.innerText = `HandScore: ${player.getHandScore()}`;
   }
 
-  private updateBetAmount(user: User) {
+  private updateBetAmount(player: User | BasicStrategyBot) {
     const playerBetAmountElement = document.getElementById(
-      "user-bet-amount"
+      `${player.name.toLowerCase()}-bet-amount`
     ) as HTMLElement;
-    playerBetAmountElement.innerText = `Bet: ${user.betAmount}`;
+    playerBetAmountElement.innerText = `Bet: ${player.betAmount}`;
   }
 
-  private updateChips(user: User) {
+  private updateChips(player: User | BasicStrategyBot) {
     const playerChipsElement = document.getElementById(
-      "user-chips"
+      `${player.name.toLowerCase()}-chips`
     ) as HTMLElement;
-    playerChipsElement.innerText = `Chips: ${user.chips}`;
+    playerChipsElement.innerText = `Chips: ${player.chips}`;
   }
 
-  private addCardDispay(card: Card) {
+  private addCardDispay(player: User | BasicStrategyBot | Dealer, card: Card) {
     const playerHandsElement = document.getElementById(
-      "user-hand"
+      `${player.name.toLowerCase()}-hand`
     ) as HTMLElement;
     let container = document.createElement("img");
     container.src = `/trumps/${card.suit}${card.rank}.gif`;
