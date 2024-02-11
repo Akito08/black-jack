@@ -1,5 +1,7 @@
 import { Table } from "../models/Table";
 import { User } from "../models/User";
+import { Dealer } from "../models/Dealer";
+import { getUserInTable, getDealerInTable } from "../utils/helper";
 
 export class View {
   root: HTMLElement;
@@ -10,7 +12,7 @@ export class View {
   }
 
   renderBettingModal() {
-    const user = this.table.getUser() as User;
+    const user = getUserInTable(this.table);
 
     this.root.innerHTML = `
     <section id="betting-modal">
@@ -84,6 +86,8 @@ export class View {
   }
 
   renderActingPage() {
+    const dealer = getDealerInTable(this.table);
+    const user = getUserInTable(this.table);
     this.root.innerHTML = `
     <section id="acting-page">
     <!-- Dealer ↓ -->
@@ -92,10 +96,10 @@ export class View {
         id="dealer-name"
         class="text-white text-l my-2 font-bold text-2xl"
       >
-        Dealer
+        ${dealer.name}
       </h3>
-      <div id="dealer-status" class="text-white">Initial</div>
-      <div id="dealer-hand-score" class="text-white mb-4">HandScore: 0</div>
+      <div id="dealer-status" class="text-white">${dealer.status}</div>
+      <div id="dealer-hand-score" class="text-white mb-4">HandScore: ${dealer.getHandScore()}</div>
       <div
         id="dealer-hands"
         class="flex space-x-2 justify-center items-center"
@@ -125,12 +129,12 @@ export class View {
 
       <!-- User ↓ -->
       <div class="w-1/3 flex flex-col items-center">
-        <h3 class="text-white my-2 font-bold text-2xl">User1</h3>
+        <h3 class="text-white my-2 font-bold text-2xl">${user.name}</h3>
         <div class="text-white">Initial</div>
         <div class="flex justify-center items-center space-x-4 mb-4">
-          <div class="text-white">HandScore: 0</div>
-          <div class="text-white">Bet: 0</div>
-          <div class="text-white">Chips: 500</div>
+          <div class="text-white">HandScore: ${user.getHandScore()}</div>
+          <div class="text-white">Bet: ${user.betAmount}</div>
+          <div class="text-white">Chips: ${user.chips}</div>
         </div>
         <div class="flex space-x-2 justify-center items-center">
           <img src="/trumps/CQ.gif" class="h-32 w-24" />

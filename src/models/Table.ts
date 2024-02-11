@@ -25,10 +25,6 @@ export class Table {
     this.players.push(new Dealer("Dealer"));
   }
 
-  public getUser(): User | undefined {
-    return this.players.find((player) => player instanceof User) as User;
-  }
-
   public botMakeBet(): void {
     for (let player of this.players) {
       if (player instanceof User) continue;

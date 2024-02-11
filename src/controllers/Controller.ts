@@ -1,5 +1,6 @@
 import { Table } from "../models/Table";
 import { View } from "../views/view";
+import { getUserInTable } from "../utils/helper";
 
 export class Controller {
   startPage = document.getElementById("start-page") as HTMLElement;
@@ -17,6 +18,7 @@ export class Controller {
     //this.setupBetActions();
 
     //actingPageのテスト
+    this.table.assignPlayerHands();
     this.view.renderActingPage();
   }
 
@@ -35,7 +37,7 @@ export class Controller {
   }
 
   userResetBet() {
-    const user = this.table.getUser();
+    const user = getUserInTable(this.table);
     if (user) {
       user.resetBet();
       this.view.updateBetAndChipsDisplay(user);
@@ -43,7 +45,7 @@ export class Controller {
   }
 
   userMakeBet(chipValue: number) {
-    const user = this.table.getUser();
+    const user = getUserInTable(this.table);
     if (user) {
       user.makeBet(chipValue);
       this.view.updateBetAndChipsDisplay(user);
