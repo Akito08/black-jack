@@ -32,6 +32,7 @@ export class Controller {
     this.setupHitAction(user);
     this.setupDoubleAction(user);
     this.setupStandAction(user);
+    console.log("Hello");
     //this.view.updatePlayerHandDisplay(user);
   }
 
