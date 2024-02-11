@@ -82,4 +82,105 @@ export class View {
       userChipsElement.innerText = `You have $${user.chips} chips`;
     }
   }
+
+  renderActingPage() {
+    this.root.innerHTML = `
+    <section id="acting-page">
+    <!-- Dealer ↓ -->
+    <div class="w-full h-56 flex flex-col items-center relative mb-9">
+      <h3
+        id="dealer-name"
+        class="text-white text-l my-2 font-bold text-2xl"
+      >
+        Dealer
+      </h3>
+      <div id="dealer-status" class="text-white">Initial</div>
+      <div id="dealer-hand-score" class="text-white mb-4">HandScore: 0</div>
+      <div
+        id="dealer-hands"
+        class="flex space-x-2 justify-center items-center"
+      >
+        <img src="/trumps/CQ.gif" class="h-32 w-24" />
+        <img src="/trumps/HA.gif" class="h-32 w-24" />
+      </div>
+    </div>
+    <!-- Dealer ↑ -->
+
+    <div class="w-full flex justify-around">
+      <!-- Bot1 ↓ -->
+      <div class="w-1/3 flex flex-col items-center">
+        <h3 class="text-white my-2 font-bold text-2xl">Bot1</h3>
+        <div class="text-white">Initial</div>
+        <div class="flex justify-center items-center space-x-4 mb-4">
+          <div class="text-white">HandScore: 0</div>
+          <div class="text-white">Bet: 0</div>
+          <div class="text-white">Chips: 500</div>
+        </div>
+        <div class="flex space-x-2 justify-center items-center">
+          <img src="/trumps/CQ.gif" class="h-32 w-24" />
+          <img src="/trumps/HA.gif" class="h-32 w-24" />
+        </div>
+      </div>
+      <!-- Bot1 ↑ -->
+
+      <!-- User ↓ -->
+      <div class="w-1/3 flex flex-col items-center">
+        <h3 class="text-white my-2 font-bold text-2xl">User1</h3>
+        <div class="text-white">Initial</div>
+        <div class="flex justify-center items-center space-x-4 mb-4">
+          <div class="text-white">HandScore: 0</div>
+          <div class="text-white">Bet: 0</div>
+          <div class="text-white">Chips: 500</div>
+        </div>
+        <div class="flex space-x-2 justify-center items-center">
+          <img src="/trumps/CQ.gif" class="h-32 w-24" />
+          <img src="/trumps/HA.gif" class="h-32 w-24" />
+        </div>
+      </div>
+      <!-- User ↑ -->
+
+      <!-- Bot2↓ -->
+      <div class="w-1/3 flex flex-col items-center">
+        <h3 class="text-white my-2 font-bold text-2xl">Bot2</h3>
+        <div class="text-white">Initial</div>
+        <div class="flex justify-center items-center space-x-4 mb-4">
+          <div class="text-white">HandScore: 0</div>
+          <div class="text-white">Bet: 0</div>
+          <div class="text-white">Chips: 500</div>
+        </div>
+        <div class="flex space-x-2 justify-center items-center">
+          <img src="/trumps/CQ.gif" class="h-32 w-24" />
+          <img src="/trumps/HA.gif" class="h-32 w-24" />
+        </div>
+      </div>
+      <!-- Bot2↑ -->
+    </div>
+
+    <div
+      class="text-center h-1/4 w-full absolute bottom-0 left-1/2 -translate-x-1/2 border-t border-black bg-green-800"
+    >
+      <div class="flex justify-center items-center space-x-44 mt-10">
+        <button
+          id="stand-button"
+          class="action-button w-24 h-24 bg-red-500 hover:bg-red-400 rounded-full flex justify-center items-center border-double border-8 border-white"
+        >
+          <span class="text-white font-bold">STAND</span>
+        </button>
+        <button
+          id="hit-button"
+          class="action-button w-24 h-24 bg-yellow-400 hover:bg-yellow-300 rounded-full flex justify-center items-center border-double border-8 border-white"
+        >
+          <span class="text-white font-bold">HIT</span>
+        </button>
+        <button
+          id="double-button"
+          class="action-button w-24 h-24 bg-indigo-500 hover:bg-indigo-400 rounded-full flex justify-center items-center border-double border-8 border-white"
+        >
+          <span class="text-white font-bold">DOUBLE</span>
+        </button>
+      </div>
+    </div>
+  </section>
+    `;
+  }
 }

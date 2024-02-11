@@ -13,8 +13,11 @@ export class Controller {
     this.table = new Table(gameType, userName);
     this.startPage.classList.add("hidden");
     this.view = new View(this.table);
-    this.view.renderBettingModal();
-    this.setupBetActions();
+    //this.view.renderBettingModal();
+    //this.setupBetActions();
+
+    //actingPageのテスト
+    this.view.renderActingPage();
   }
 
   setupBetActions() {
