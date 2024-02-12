@@ -232,7 +232,7 @@ export class View {
     `;
   }
 
-  updateChallengerInfoDisplay(
+  public updateChallengerInfoDisplay(
     player: User | BasicStrategyBot | PerfectStrategyBot
   ) {
     this.updatePlayerStatus(player);
@@ -242,7 +242,7 @@ export class View {
     this.updatePlayerHandDisplay(player);
   }
 
-  updateDealerInfoDisplay(dealer: Dealer) {
+  public updateDealerInfoDisplay(dealer: Dealer) {
     this.updatePlayerStatus(dealer);
     this.updateHandScore(dealer);
     this.updatePlayerHandDisplay(dealer);
