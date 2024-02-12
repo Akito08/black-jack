@@ -349,4 +349,13 @@ export class View {
       "font-bold text-white text-2xl mt-4 h-9 w-60 bg-blue-500 hover:bg-blue-400 rounded-xl";
     resultListElement.appendChild(nextGameButton);
   }
+
+  renderGameOverModal() {
+    this.root.innerHTML = `
+    <section id="game-over-modal">
+      <div class="bg-white text-center h-1/3 w-1/2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div class="text-4xl font-bold absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">GAME OVER</div>
+      </div>
+    </section>`;
+  }
 }
