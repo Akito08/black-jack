@@ -1,7 +1,12 @@
 import { Table } from "../models/Table";
 import { Deck } from "../models/Deck";
 import { View } from "../views/view";
-import { getUserInTable } from "../utils/helper";
+import {
+  getUserInTable,
+  getAllBotsInTable,
+  getDealerInTable,
+  sleep,
+} from "../utils/helper";
 import { Player } from "../interface/Player";
 import { User } from "../models/User";
 import { BasicStrategyBot } from "../models/BasicStrategyBot";
@@ -28,11 +33,13 @@ export class Controller {
     this.table.assignPlayerHands();
     this.view.renderActingPage();
     const user = getUserInTable(this.table);
-    this.view.initialPlayerHandDisplay(user);
+    for (let player of this.table.players) {
+      this.view.updatePlayerHandDisplay(player);
+    }
     this.setupHitAction(user);
     this.setupDoubleAction(user);
     this.setupStandAction(user);
-    console.log("Hello");
+    this.view.highlightCurrentPlayer(user);
     //this.view.updatePlayerHandDisplay(user);
   }
 
@@ -75,7 +82,8 @@ export class Controller {
       player.stand();
       this.view.updatePlayerStatus(user);
       this.view.disableAllActionButtons();
-      //this.allBotsMakeActions();
+      this.processBotAndDealerTurn();
+      this.view.highlightCurrentPlayer(user);
     });
   }
 
@@ -87,10 +95,11 @@ export class Controller {
     hitButton.addEventListener("click", () => {
       const card = this.deck.drawOne();
       player.hit(card);
-      this.view.updatePlayerInfoDisplay(user, card);
+      this.view.updateChallengerInfoDisplay(user);
       if (user.isBust()) {
         this.view.disableAllActionButtons();
-        //this.allBotsMakeActions();
+        this.view.highlightCurrentPlayer(user);
+        this.processBotAndDealerTurn();
       } else this.view.disableDoubleButton();
     });
   }
@@ -103,9 +112,37 @@ export class Controller {
     doubleButton.addEventListener("click", () => {
       const card = this.deck.drawOne();
       player.double(card);
-      this.view.updatePlayerInfoDisplay(user, card);
+      this.view.updateChallengerInfoDisplay(user);
       this.view.disableAllActionButtons();
-      //this.allBotsMakeActions();
+      this.view.highlightCurrentPlayer(user);
+      this.processBotAndDealerTurn();
     });
+  }
+
+  public async processBotAndDealerTurn() {
+    await sleep(1000);
+    const bots = getAllBotsInTable(this.table);
+    for (let bot of bots) {
+      await sleep(1000);
+      this.view.highlightCurrentPlayer(bot);
+      await sleep(1000);
+      while (!bot.isTurnEnd) {
+        this.table.botAct(bot);
+        this.view.updateChallengerInfoDisplay(bot);
+        await sleep(1000);
+      }
+      this.view.highlightCurrentPlayer(bot);
+    }
+
+    await sleep(1000);
+    const dealer = getDealerInTable(this.table);
+    this.view.highlightCurrentPlayer(dealer);
+    await sleep(1000);
+    while (!dealer.isTurnEnd) {
+      this.table.dealerAct(dealer);
+      this.view.updateDealerInfoDisplay(dealer);
+      await sleep(1000);
+    }
+    this.view.highlightCurrentPlayer(dealer);
   }
 }

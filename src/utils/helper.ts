@@ -24,6 +24,15 @@ export const getPerfectStrategyBotInTable = (table: Table) => {
   ) as PerfectStrategyBot;
 };
 
+export const getAllBotsInTable = (
+  table: Table
+): Array<BasicStrategyBot | PerfectStrategyBot> => {
+  return table.players.filter(
+    (player) =>
+      player instanceof BasicStrategyBot || player instanceof PerfectStrategyBot
+  ) as Array<BasicStrategyBot | PerfectStrategyBot>;
+};
+
 export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };

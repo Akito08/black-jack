@@ -1,6 +1,5 @@
 import { Table } from "../models/Table";
 import { User } from "../models/User";
-import { Card } from "../models/Card";
 import {
   getUserInTable,
   getDealerInTable,
@@ -115,11 +114,9 @@ export class View {
         HandScore: ${dealer.getHandScore()}
       </div>
       <div
-        id="dealer-hands"
+        id="dealer-hand"
         class="flex space-x-2 justify-center items-center"
       >
-        <img src="/trumps/CQ.gif" class="h-32 w-24" />
-        <img src="/trumps/HA.gif" class="h-32 w-24" />
       </div>
     </div>
     <!-- Dealer ↑ -->
@@ -127,7 +124,9 @@ export class View {
     <div class="w-full flex justify-around">
       <!-- Bot1 ↓ -->
       <div class="w-1/3 flex flex-col items-center">
-        <h3 class="text-white my-2 font-bold text-2xl">${bot1.name}</h3>
+        <h3 id="bot1-name" class="text-white my-2 font-bold text-2xl">${
+          bot1.name
+        }</h3>
         <div id="bot1-status" class="text-white">${bot1.status}</div>
         <div class="flex justify-center items-center space-x-4 mb-4">
           <div id="bot1-hand-score" class="text-white">
@@ -148,8 +147,10 @@ export class View {
       <!-- Bot1 ↑ -->
 
       <!-- User ↓ -->
-      <div class="w-1/3 flex flex-col items-center">
-        <h3 class="text-white my-2 font-bold text-2xl">${user.name}</h3>
+      <div class="w-1/3 flex flex-col items-center pt-8"">
+        <h3 id="${user.name.toLowerCase()}-name" class="text-white my-2 font-bold text-2xl">${
+      user.name
+    }</h3>
         <div id="${user.name.toLowerCase()}-status" class="text-white">
           Initial
         </div>
@@ -181,7 +182,9 @@ export class View {
 
       <!-- Bot2 ↓ -->
       <div class="w-1/3 flex flex-col items-center">
-        <h3 class="text-white my-2 font-bold text-2xl">${bot2.name}</h3>
+        <h3 id="bot2-name" class="text-white my-2 font-bold text-2xl">${
+          bot2.name
+        }</h3>
         <div id="bot2-status" class="text-white">${bot2.status}</div>
         <div class="flex justify-center items-center space-x-4 mb-4">
           <div id="bot2-hand-score" class="text-white">
@@ -229,26 +232,34 @@ export class View {
     `;
   }
 
-  initialPlayerHandDisplay(player: Player) {
+  updateChallengerInfoDisplay(
+    player: User | BasicStrategyBot | PerfectStrategyBot
+  ) {
+    this.updatePlayerStatus(player);
+    this.updateHandScore(player);
+    this.updateBetAmount(player);
+    this.updateChips(player);
+    this.updatePlayerHandDisplay(player);
+  }
+
+  updateDealerInfoDisplay(dealer: Dealer) {
+    this.updatePlayerStatus(dealer);
+    this.updateHandScore(dealer);
+    this.updatePlayerHandDisplay(dealer);
+  }
+
+  public updatePlayerHandDisplay(player: Player) {
     const PlayerHandsElememnt = document.getElementById(
-      `${player.name}-hand`
+      `${player.name.toLowerCase()}-hand`
     ) as HTMLElement;
+
+    PlayerHandsElememnt.innerHTML = "";
     for (let card of player.hand) {
       let container = document.createElement("img");
       container.src = container.className = "h-32 w-24";
       container.src = `/trumps/${card.suit}${card.rank}.gif`;
       PlayerHandsElememnt.appendChild(container);
     }
-  }
-  updatePlayerInfoDisplay(
-    player: User | BasicStrategyBot | PerfectStrategyBot,
-    card: Card
-  ) {
-    this.updatePlayerStatus(player);
-    this.updateHandScore(player);
-    this.updateBetAmount(player);
-    this.updateChips(player);
-    this.addCardDispay(player, card);
   }
 
   public updatePlayerStatus(player: User | BasicStrategyBot | Dealer) {
@@ -279,16 +290,6 @@ export class View {
     playerChipsElement.innerText = `Chips: ${player.chips}`;
   }
 
-  private addCardDispay(player: User | BasicStrategyBot | Dealer, card: Card) {
-    const playerHandsElement = document.getElementById(
-      `${player.name.toLowerCase()}-hand`
-    ) as HTMLElement;
-    let container = document.createElement("img");
-    container.src = `/trumps/${card.suit}${card.rank}.gif`;
-    container.className = "h-32 w-24";
-    playerHandsElement.appendChild(container);
-  }
-
   public async disableDoubleButton() {
     await sleep(800);
     const doubleButton = document.getElementById(
@@ -305,5 +306,19 @@ export class View {
       actionButton.disabled = true;
       actionButton.classList.add("opacity-50");
     });
+  }
+
+  public highlightCurrentPlayer(player: Player) {
+    const playerNameElement = document.getElementById(
+      `${player.name.toLowerCase()}-name`
+    ) as HTMLElement;
+    if (playerNameElement.classList.contains("text-white")) {
+      playerNameElement.classList.remove("text-white");
+      playerNameElement.classList.add("text-yellow-500");
+      console.log(playerNameElement);
+    } else {
+      playerNameElement.classList.remove("text-yellow-500");
+      playerNameElement.classList.add("text-white");
+    }
   }
 }

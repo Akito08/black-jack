@@ -5,11 +5,13 @@ import { Card } from "./Card";
 export class Dealer implements Player {
   readonly name: string;
   public hand: Card[];
+  public isTurnEnd: boolean;
   public status: DealerStatus;
   constructor(name: string) {
     this.name = name;
     this.hand = [];
     this.status = "Initial";
+    this.isTurnEnd = false;
   }
 
   public updateStatus(dealerStatus: DealerStatus): void {
@@ -53,11 +55,15 @@ export class Dealer implements Player {
 
   public stand(): void {
     this.updateStatus("Stand");
+    this.isTurnEnd = true;
   }
 
   public hit(card: Card): void {
     this.drawCard(card);
-    if (this.isBust()) this.updateStatus("Bust");
-    else this.updateStatus("Hit");
+    if (!this.isBust()) this.updateStatus("Hit");
+    else {
+      this.updateStatus("Bust");
+      this.isTurnEnd = true;
+    }
   }
 }

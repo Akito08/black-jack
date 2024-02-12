@@ -41,14 +41,14 @@ export class Table {
     }
   }
 
-  public botAction() {
-    for (let bot of this.players) {
-      if (bot instanceof User) continue;
-      if (bot instanceof Dealer) continue;
-      while (bot.getHandScore() <= 16) {
-        bot.hit(this.deck.drawOne());
-      }
-    }
+  public botAct(bot: BasicStrategyBot | PerfectStrategyBot) {
+    if (bot.getHandScore() <= 16) bot.hit(this.deck.drawOne());
+    else bot.stand();
+  }
+
+  public dealerAct(dealer: Dealer) {
+    if (dealer.getHandScore() <= 16) dealer.hit(this.deck.drawOne());
+    else dealer.stand();
   }
 
   //各プレイヤーとディーラーの勝敗を判定する関数

@@ -8,12 +8,14 @@ export class Challenger implements Player {
   public status: ChallengerStatus;
   public chips: number;
   public betAmount: number;
+  public isTurnEnd: boolean;
   constructor(name: string) {
     this.name = name;
     this.hand = [];
     this.status = "Initial";
     this.chips = 500;
     this.betAmount = 0;
+    this.isTurnEnd = false;
   }
 
   public updateStatus(challengerStatus: ChallengerStatus): void {
@@ -60,12 +62,16 @@ export class Challenger implements Player {
 
   public stand(): void {
     this.updateStatus("Stand");
+    this.isTurnEnd = true;
   }
 
   public hit(card: Card): void {
     this.drawCard(card);
-    if (this.isBust()) this.updateStatus("Bust");
-    else this.updateStatus("Hit");
+    if (!this.isBust()) this.updateStatus("Hit");
+    else {
+      this.updateStatus("Bust");
+      this.isTurnEnd = true;
+    }
   }
 
   public double(card: Card): void {
@@ -75,5 +81,6 @@ export class Challenger implements Player {
     this.drawCard(card);
     if (this.isBust()) this.updateStatus("Bust");
     else this.updateStatus("Double");
+    this.isTurnEnd = true;
   }
 }
