@@ -3,6 +3,7 @@ import { BasicStrategyBot } from "./BasicStrategyBot";
 import { PerfectStrategyBot } from "./PerfectStrategyBot";
 import { User } from "./User";
 import { Dealer } from "./Dealer";
+import { getAllBotsInTable } from "../utils/helper";
 import { ActiveChallengerStatus } from "../types";
 
 export class Table {
@@ -27,9 +28,8 @@ export class Table {
   }
 
   public allBotsMakeBet(): void {
-    for (let bot of this.players) {
-      if (bot instanceof User) continue;
-      if (bot instanceof Dealer) continue;
+    const bots = getAllBotsInTable(this);
+    for (let bot of bots) {
       bot.makeBet();
     }
   }

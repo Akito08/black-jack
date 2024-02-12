@@ -31,6 +31,7 @@ export class Controller {
 
     //actingPageのテスト
     this.table.assignPlayerHands();
+    this.table.allBotsMakeBet();
     this.view.renderActingPage();
     const user = getUserInTable(this.table);
     for (let player of this.table.players) {
