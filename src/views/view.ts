@@ -321,4 +321,32 @@ export class View {
       playerNameElement.classList.add("text-white");
     }
   }
+
+  renderResultModal() {
+    this.root.innerHTML = `
+    <section id="result-modal">
+      <div
+          id="result-list" class="bg-white text-center h-1/2 w-1/2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 space-y-10 pt-14"
+        >
+      </div>
+    </section>`;
+
+    let resultListElement = document.getElementById(
+      "result-list"
+    ) as HTMLElement;
+    for (let result of this.table.resultLog) {
+      let resulElement = document.createElement("div");
+      resulElement.innerHTML = `
+      <div class="font-bold text-3xl">${result}<div>
+      `;
+      resultListElement.appendChild(resulElement);
+    }
+
+    const nextGameButton = document.createElement("button");
+    nextGameButton.textContent = "Next Game"; // ボタンのテキストを設定
+    nextGameButton.id = "next-game-button"; // ボタンのIDを設定
+    nextGameButton.className =
+      "font-bold text-white text-2xl mt-4 h-9 w-60 bg-blue-500 hover:bg-blue-400 rounded-xl";
+    resultListElement.appendChild(nextGameButton);
+  }
 }

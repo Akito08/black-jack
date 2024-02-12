@@ -30,18 +30,22 @@ export class Controller {
     //this.setupBetActions();
 
     //actingPageのテスト
-    this.table.assignPlayerHands();
-    this.table.allBotsMakeBet();
-    this.view.renderActingPage();
-    const user = getUserInTable(this.table);
-    for (let player of this.table.players) {
-      this.view.updatePlayerHandDisplay(player);
-    }
-    this.setupHitAction(user);
-    this.setupDoubleAction(user);
-    this.setupStandAction(user);
-    this.view.highlightCurrentPlayer(user);
+    // this.table.assignPlayerHands();
+    // this.table.allBotsMakeBet();
+    // this.view.renderActingPage();
+    // const user = getUserInTable(this.table);
+    // for (let player of this.table.players) {
+    //   this.view.updatePlayerHandDisplay(player);
+    // }
+    // this.setupHitAction(user);
+    // this.setupDoubleAction(user);
+    // this.setupStandAction(user);
+    // this.view.highlightCurrentPlayer(user);
     //this.view.updatePlayerHandDisplay(user);
+
+    //resultModalのテスト
+    this.view.renderResultModal();
+    this.setupNextGameButton();
   }
 
   setupBetActions() {
@@ -120,6 +124,15 @@ export class Controller {
     });
   }
 
+  setupNextGameButton() {
+    const nextGameButton = document.getElementById(
+      "next-game-button"
+    ) as HTMLButtonElement;
+    nextGameButton.addEventListener("click", () => {
+      console.log("Next Game");
+    });
+  }
+
   public async processBotAndDealerTurn() {
     await sleep(1000);
     const bots = getAllBotsInTable(this.table);
@@ -145,5 +158,6 @@ export class Controller {
       await sleep(1000);
     }
     this.view.highlightCurrentPlayer(dealer);
+    this.table.evaluateWinner();
   }
 }
