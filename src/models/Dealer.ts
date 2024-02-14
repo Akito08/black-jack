@@ -66,4 +66,10 @@ export class Dealer implements Player {
       this.isTurnEnd = true;
     }
   }
+
+  public resetState() {
+    this.status = "Initial";
+    this.hand = [];
+    this.isTurnEnd = false;
+  }
 }

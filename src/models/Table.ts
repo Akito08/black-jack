@@ -3,13 +3,18 @@ import { BasicStrategyBot } from "./BasicStrategyBot";
 import { PerfectStrategyBot } from "./PerfectStrategyBot";
 import { User } from "./User";
 import { Dealer } from "./Dealer";
-import { getAllBotsInTable } from "../utils/helper";
-import { ActiveChallengerStatus } from "../types";
+import {
+  getDealerInTable,
+  getAllBotsInTable,
+  getChallengerInTable,
+} from "../utils/helper";
+import { GamePhase } from "../types";
+import { Challenger } from "./Challenger";
 
 export class Table {
   readonly gameType: string;
   readonly userName: string;
-  public gamePhase: string;
+  private gamePhase: GamePhase;
   public resultLog: string[];
   public deck: Deck;
   public players: (User | BasicStrategyBot | Dealer)[];
@@ -27,6 +32,14 @@ export class Table {
     this.players.push(new Dealer("Dealer"));
   }
 
+  public getGamePhase(): GamePhase {
+    return this.gamePhase;
+  }
+
+  public setGamePhase(gamePhase: GamePhase): void {
+    this.gamePhase = gamePhase;
+  }
+
   public allBotsMakeBet(): void {
     const bots = getAllBotsInTable(this);
     for (let bot of bots) {
@@ -38,6 +51,7 @@ export class Table {
     for (let player of this.players) {
       player.drawCard(this.deck.drawOne());
       player.drawCard(this.deck.drawOne());
+      if (player.isBlackjack()) player.status = "Blackjack";
     }
   }
 
@@ -51,56 +65,61 @@ export class Table {
     else dealer.stand();
   }
 
-  //各プレイヤーとディーラーの勝敗を判定する関数
-  public evaluateWinner(): void {
-    const dealer = this.players[this.players.length - 1] as Dealer;
-    for (let player of this.players) {
-      if (player instanceof Dealer) continue;
+  public processGamePhase() {
+    if (this.getGamePhase() === "Betting") {
+      this.setGamePhase("Acting");
+      this.allBotsMakeBet();
+      this.assignPlayerHands();
+    } else if (this.getGamePhase() === "Acting") {
+      this.setGamePhase("Evaluating");
+      this.evaluateWinner();
+    } else if (this.getGamePhase() === "Evaluating") {
+      this.setGamePhase("Betting");
+      this.resetTable();
+    }
+  }
 
+  //各チャレンジャーとディーラーの勝敗を判定する関数
+  private evaluateWinner(): void {
+    const dealer = getDealerInTable(this);
+    const challengers = getChallengerInTable(this);
+    for (let challenger of challengers) {
       let result = "";
-      // プレイヤーがBustの場合、自動的に負け
-      if (player.status === "Bust") result = "Lose";
-      else if (player.status === "Blackjack")
+      if (challenger.status === "Bust") result = "Lose";
+      else if (challenger.status === "Blackjack")
         result = dealer.status === "Blackjack" ? "Draw" : "Win";
       else if (dealer.status === "Bust") result = "Win";
-      // 上記以外のケース（Stand, Hit, Double）
-      else result = this.compareWithDealerHands(player, dealer);
-      const exPlayerChips = player.chips + player.betAmount;
-      if (result === "Win" || result === "Lose")
-        player.chips = this.updatePlayerChips(player, exPlayerChips, result);
-      else player.chips = exPlayerChips;
+      else result = this.compareWithDealerHand(challenger, dealer);
 
-      const log = `${player.name}: ${result} ${exPlayerChips}→${player.chips}`;
+      const exChallengerChips = challenger.chips + challenger.betAmount;
+      if (result === "Win") {
+        if (challenger.status === "Blackjack") {
+          challenger.chips =
+            exChallengerChips + Math.floor(challenger.betAmount * 1.5);
+        } else {
+          challenger.chips = exChallengerChips + challenger.betAmount;
+        }
+      } else if (result === "Lose")
+        challenger.chips = exChallengerChips - challenger.betAmount;
+      else challenger.chips = exChallengerChips;
+
+      const log = `${challenger.name}: ${result} ${exChallengerChips}→${challenger.chips}`;
       this.resultLog.push(log);
     }
   }
-  //プレイヤーとディーラーのBlackjackとBustの状態は省かれているため、手札の大小を比べれば良い
-  public compareWithDealerHands(
-    player: User | BasicStrategyBot,
+
+  private compareWithDealerHand(
+    challenger: Challenger,
     dealer: Dealer
   ): "Win" | "Lose" | "Draw" {
-    if (player.getHandScore() === dealer.getHandScore()) return "Draw";
-    else if (player.getHandScore() > dealer.getHandScore()) return "Win";
+    if (challenger.getHandScore() === dealer.getHandScore()) return "Draw";
+    else if (challenger.getHandScore() > dealer.getHandScore()) return "Win";
     else return "Lose";
   }
-
-  public updatePlayerChips(
-    player: User | BasicStrategyBot,
-    chips: number,
-    result: "Win" | "Lose"
-  ): number {
-    const map: { [key in ActiveChallengerStatus]: number } = {
-      Bust: -1,
-      Stand: result === "Win" ? 1 : -1,
-      Hit: result === "Win" ? 1 : -1,
-      Double: result === "Win" ? 1 : -1,
-      Blackjack: 1.5,
-    };
-    return (
-      chips +
-      Math.floor(
-        player.betAmount * map[player.status as ActiveChallengerStatus]
-      )
-    );
+  private resetTable() {
+    this.resultLog = [];
+    for (let player of this.players) {
+      player.resetState();
+    }
   }
 }

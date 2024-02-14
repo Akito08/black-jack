@@ -7,10 +7,6 @@ import {
   getDealerInTable,
   sleep,
 } from "../utils/helper";
-import { Player } from "../interface/Player";
-import { User } from "../models/User";
-import { BasicStrategyBot } from "../models/BasicStrategyBot";
-//import { PerfectStrategyBot } from "../models/PerfectStrategyBot";
 
 export class Controller {
   startPage = document.getElementById("start-page") as HTMLElement;
@@ -26,65 +22,78 @@ export class Controller {
     this.deck = this.table.deck;
     this.startPage.classList.add("hidden");
     this.view = new View(this.table);
-    //this.view.renderBettingModal();
-    //this.setupBetActions();
-
-    //actingPageのテスト
-    // this.table.assignPlayerHands();
-    // this.table.allBotsMakeBet();
-    // this.view.renderActingPage();
-    // const user = getUserInTable(this.table);
-    // for (let player of this.table.players) {
-    //   this.view.updatePlayerHandDisplay(player);
-    // }
-    // this.setupHitAction(user);
-    // this.setupDoubleAction(user);
-    // this.setupStandAction(user);
-    // this.view.highlightCurrentPlayer(user);
-    //this.view.updatePlayerHandDisplay(user);
-
-    //resultModalのテスト
-    this.view.renderResultModal();
-    this.setupNextGameButton();
+    this.view.renderBettingModal();
+    this.setupBetActions();
   }
 
-  setupBetActions() {
-    const resetButton = document.getElementById("reset-button");
-    resetButton?.addEventListener("click", () => {
-      this.userResetBet();
+  async gamePhaseController() {
+    if (this.table.getGamePhase() === "Betting") {
+      this.table.processGamePhase();
+      this.view.renderActingPage();
+      const user = getUserInTable(this.table);
+      if (user.isBlackjack()) {
+        await sleep(1000);
+        this.view.disableAllActionButtons();
+        this.view.highlightCurrentPlayer(user);
+        this.processBotAndDealerTurn();
+        return;
+      }
+      this.setupPlayerActions();
+    } else if (this.table.getGamePhase() === "Acting") {
+      this.table.processGamePhase();
+      const user = getUserInTable(this.table);
+      if (user.chips <= 0) {
+        this.view.renderGameOverModal();
+        return;
+      }
+      this.view.renderResultModal();
+      this.setupNextGameButton();
+    } else if (this.table.getGamePhase() === "Evaluating") {
+      this.table.processGamePhase();
+      this.view.renderBettingModal();
+      this.setupBetActions();
+    }
+  }
+
+  private setupPlayerActions() {
+    this.setupStandAction();
+    this.setupHitAction();
+    this.setupDoubleAction();
+  }
+
+  private setupBetActions() {
+    const user = getUserInTable(this.table);
+    const resetButton = document.getElementById(
+      "reset-button"
+    ) as HTMLButtonElement;
+    resetButton.addEventListener("click", () => {
+      user.resetBet();
+      this.view.updateBetAndChipsDisplay(user);
+    });
+
+    const dealButton = document.getElementById(
+      "deal-button"
+    ) as HTMLButtonElement;
+    dealButton.addEventListener("click", () => {
+      this.gamePhaseController();
     });
 
     document.querySelectorAll(".chip-button").forEach((button) => {
       button.addEventListener("click", () => {
         const chipValue = Number(button.getAttribute("chip-value"));
-        this.userMakeBet(chipValue);
+        user.makeBet(chipValue);
+        this.view.updateBetAndChipsDisplay(user);
       });
     });
   }
 
-  userResetBet() {
-    const user = getUserInTable(this.table);
-    if (user) {
-      user.resetBet();
-      this.view.updateBetAndChipsDisplay(user);
-    }
-  }
-
-  userMakeBet(chipValue: number) {
-    const user = getUserInTable(this.table);
-    if (user) {
-      user.makeBet(chipValue);
-      this.view.updateBetAndChipsDisplay(user);
-    }
-  }
-
-  setupStandAction(player: Player) {
+  setupStandAction() {
     const user = getUserInTable(this.table);
     const standButton = document.getElementById(
       "stand-button"
     ) as HTMLButtonElement;
     standButton.addEventListener("click", () => {
-      player.stand();
+      user.stand();
       this.view.updatePlayerStatus(user);
       this.view.disableAllActionButtons();
       this.processBotAndDealerTurn();
@@ -92,14 +101,14 @@ export class Controller {
     });
   }
 
-  setupHitAction(player: Player) {
+  setupHitAction() {
     const user = getUserInTable(this.table);
     const hitButton = document.getElementById(
       "hit-button"
     ) as HTMLButtonElement;
     hitButton.addEventListener("click", () => {
       const card = this.deck.drawOne();
-      player.hit(card);
+      user.hit(card);
       this.view.updateChallengerInfoDisplay(user);
       if (user.isBust()) {
         this.view.disableAllActionButtons();
@@ -109,14 +118,14 @@ export class Controller {
     });
   }
 
-  setupDoubleAction(player: User | BasicStrategyBot) {
+  setupDoubleAction() {
     const user = getUserInTable(this.table);
     const doubleButton = document.getElementById(
       "double-button"
     ) as HTMLButtonElement;
     doubleButton.addEventListener("click", () => {
       const card = this.deck.drawOne();
-      player.double(card);
+      user.double(card);
       this.view.updateChallengerInfoDisplay(user);
       this.view.disableAllActionButtons();
       this.view.highlightCurrentPlayer(user);
@@ -129,7 +138,7 @@ export class Controller {
       "next-game-button"
     ) as HTMLButtonElement;
     nextGameButton.addEventListener("click", () => {
-      console.log("Next Game");
+      this.gamePhaseController();
     });
   }
 
@@ -158,6 +167,6 @@ export class Controller {
       await sleep(1000);
     }
     this.view.highlightCurrentPlayer(dealer);
-    this.table.evaluateWinner();
+    this.gamePhaseController();
   }
 }

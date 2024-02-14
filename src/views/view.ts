@@ -5,7 +5,6 @@ import {
   getDealerInTable,
   getBasicStrategyBotInTable,
   getPerfectStrategyBotInTable,
-  sleep,
 } from "../utils/helper";
 import { Player } from "../interface/Player";
 import { BasicStrategyBot } from "../models/BasicStrategyBot";
@@ -148,11 +147,11 @@ export class View {
 
       <!-- User ↓ -->
       <div class="w-1/3 flex flex-col items-center pt-8"">
-        <h3 id="${user.name.toLowerCase()}-name" class="text-white my-2 font-bold text-2xl">${
+        <h3 id="${user.name.toLowerCase()}-name" class="text-yellow-500 my-2 font-bold text-2xl">${
       user.name
     }</h3>
         <div id="${user.name.toLowerCase()}-status" class="text-white">
-          Initial
+        ${user.status}
         </div>
         <div class="flex justify-center items-center space-x-4 mb-4">
           <div
@@ -230,6 +229,12 @@ export class View {
     </div>
   </section>
     `;
+
+    for (let player of this.table.players) {
+      this.updatePlayerHandDisplay(player);
+    }
+
+    if (!user.canDouble()) this.disableDoubleButton();
   }
 
   public updateChallengerInfoDisplay(
@@ -290,8 +295,7 @@ export class View {
     playerChipsElement.innerText = `Chips: ${player.chips}`;
   }
 
-  public async disableDoubleButton() {
-    await sleep(800);
+  public disableDoubleButton() {
     const doubleButton = document.getElementById(
       "double-button"
     ) as HTMLButtonElement;
@@ -299,8 +303,7 @@ export class View {
     doubleButton.classList.add("opacity-50");
   }
 
-  public async disableAllActionButtons() {
-    await sleep(800);
+  public disableAllActionButtons() {
     document.querySelectorAll(".action-button").forEach((element) => {
       const actionButton = element as HTMLButtonElement;
       actionButton.disabled = true;
@@ -315,7 +318,6 @@ export class View {
     if (playerNameElement.classList.contains("text-white")) {
       playerNameElement.classList.remove("text-white");
       playerNameElement.classList.add("text-yellow-500");
-      console.log(playerNameElement);
     } else {
       playerNameElement.classList.remove("text-yellow-500");
       playerNameElement.classList.add("text-white");
@@ -343,8 +345,8 @@ export class View {
     }
 
     const nextGameButton = document.createElement("button");
-    nextGameButton.textContent = "Next Game"; // ボタンのテキストを設定
-    nextGameButton.id = "next-game-button"; // ボタンのIDを設定
+    nextGameButton.textContent = "Next Game";
+    nextGameButton.id = "next-game-button";
     nextGameButton.className =
       "font-bold text-white text-2xl mt-4 h-9 w-60 bg-blue-500 hover:bg-blue-400 rounded-xl";
     resultListElement.appendChild(nextGameButton);

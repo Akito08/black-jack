@@ -83,4 +83,11 @@ export class Challenger implements Player {
     else this.updateStatus("Double");
     this.isTurnEnd = true;
   }
+
+  public resetState() {
+    this.status = "Initial";
+    this.betAmount = 0;
+    this.hand = [];
+    this.isTurnEnd = false;
+  }
 }
