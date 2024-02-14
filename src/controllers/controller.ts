@@ -160,16 +160,28 @@ export class Controller {
       this.view.highlightCurrentPlayer(bot);
     }
 
-    await sleep(1000);
+    await sleep(800);
     const dealer = getDealerInTable(this.table);
     this.view.highlightCurrentPlayer(dealer);
     await sleep(1000);
-    while (!dealer.isTurnEnd) {
-      this.table.dealerAct(dealer);
+    dealer.flipCard();
+    this.view.updateDealerInfoDisplay(dealer);
+    if (dealer.isBlackjack()) {
+      dealer.setBlackjack();
       this.view.updateDealerInfoDisplay(dealer);
       await sleep(1000);
+      this.view.highlightCurrentPlayer(dealer);
+      this.gamePhaseController();
+      return;
+    }
+
+    while (!dealer.isTurnEnd) {
+      await sleep(1000);
+      this.table.dealerAct(dealer);
+      this.view.updateDealerInfoDisplay(dealer);
     }
     this.view.highlightCurrentPlayer(dealer);
+    await sleep(1000);
     this.gamePhaseController();
   }
 }

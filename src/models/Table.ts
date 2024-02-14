@@ -71,6 +71,8 @@ export class Table {
       this.setGamePhase("Acting");
       this.allBotsMakeBet();
       this.assignPlayerHands();
+      const dealer = getDealerInTable(this);
+      dealer.flipCard();
     } else if (this.getGamePhase() === "Acting") {
       this.setGamePhase("Evaluating");
       this.evaluateMatchResult();

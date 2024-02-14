@@ -262,7 +262,9 @@ export class View {
     for (let card of player.hand) {
       let container = document.createElement("img");
       container.src = container.className = "h-32 w-24";
-      container.src = `/trumps/${card.suit}${card.rank}.gif`;
+      container.src = card.isFront
+        ? `/trumps/${card.suit}${card.rank}.gif`
+        : "/trumps/Back1.gif";
       PlayerHandsElememnt.appendChild(container);
     }
   }
