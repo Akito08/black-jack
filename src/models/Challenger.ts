@@ -60,6 +60,11 @@ export class Challenger implements Player {
     return this.status === "Initial" && this.betAmount <= this.chips;
   }
 
+  public setBlackjack(): void {
+    this.status = "Blackjack";
+    this.isTurnEnd = true;
+  }
+
   public stand(): void {
     this.updateStatus("Stand");
     this.isTurnEnd = true;

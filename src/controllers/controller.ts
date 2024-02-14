@@ -32,7 +32,7 @@ export class Controller {
       this.view.renderActingPage();
       const user = getUserInTable(this.table);
       if (user.isBlackjack()) {
-        await sleep(1000);
+        await sleep(800);
         this.view.disableAllActionButtons();
         this.view.highlightCurrentPlayer(user);
         this.processBotAndDealerTurn();
@@ -92,12 +92,13 @@ export class Controller {
     const standButton = document.getElementById(
       "stand-button"
     ) as HTMLButtonElement;
-    standButton.addEventListener("click", () => {
+    standButton.addEventListener("click", async () => {
       user.stand();
       this.view.updatePlayerStatus(user);
+      await sleep(800);
       this.view.disableAllActionButtons();
-      this.processBotAndDealerTurn();
       this.view.highlightCurrentPlayer(user);
+      this.processBotAndDealerTurn();
     });
   }
 
@@ -106,11 +107,12 @@ export class Controller {
     const hitButton = document.getElementById(
       "hit-button"
     ) as HTMLButtonElement;
-    hitButton.addEventListener("click", () => {
+    hitButton.addEventListener("click", async () => {
       const card = this.deck.drawOne();
       user.hit(card);
       this.view.updateChallengerInfoDisplay(user);
       if (user.isBust()) {
+        await sleep(800);
         this.view.disableAllActionButtons();
         this.view.highlightCurrentPlayer(user);
         this.processBotAndDealerTurn();
@@ -123,10 +125,11 @@ export class Controller {
     const doubleButton = document.getElementById(
       "double-button"
     ) as HTMLButtonElement;
-    doubleButton.addEventListener("click", () => {
+    doubleButton.addEventListener("click", async () => {
       const card = this.deck.drawOne();
       user.double(card);
       this.view.updateChallengerInfoDisplay(user);
+      await sleep(800);
       this.view.disableAllActionButtons();
       this.view.highlightCurrentPlayer(user);
       this.processBotAndDealerTurn();
@@ -143,7 +146,7 @@ export class Controller {
   }
 
   public async processBotAndDealerTurn() {
-    await sleep(1000);
+    await sleep(200);
     const bots = getAllBotsInTable(this.table);
     for (let bot of bots) {
       await sleep(1000);

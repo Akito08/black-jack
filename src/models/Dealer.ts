@@ -53,6 +53,11 @@ export class Dealer implements Player {
     return this.getHandScore() > 21;
   }
 
+  public setBlackjack(): void {
+    this.status = "Blackjack";
+    this.isTurnEnd = true;
+  }
+
   public stand(): void {
     this.updateStatus("Stand");
     this.isTurnEnd = true;

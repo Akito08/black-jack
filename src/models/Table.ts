@@ -51,10 +51,11 @@ export class Table {
     for (let player of this.players) {
       player.drawCard(this.deck.drawOne());
       player.drawCard(this.deck.drawOne());
-      if (player.isBlackjack()) player.status = "Blackjack";
+      if (player.isBlackjack()) player.setBlackjack();
     }
   }
 
+  //後でBasic Strategyを採用した動きに変える
   public botAct(bot: BasicStrategyBot | PerfectStrategyBot) {
     if (bot.getHandScore() <= 16) bot.hit(this.deck.drawOne());
     else bot.stand();
@@ -116,6 +117,7 @@ export class Table {
     else if (challenger.getHandScore() > dealer.getHandScore()) return "Win";
     else return "Lose";
   }
+
   private resetTable() {
     this.resultLog = [];
     for (let player of this.players) {

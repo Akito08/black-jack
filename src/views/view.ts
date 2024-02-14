@@ -328,8 +328,8 @@ export class View {
     this.root.innerHTML = `
     <section id="result-modal">
       <div
-          id="result-list" class="bg-white text-center h-1/2 w-1/2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 space-y-10 pt-14"
-        >
+      <div id="result-list" class="bg-white text-center h-1/2 w-1/2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 space-y-10 pt-14">
+        
       </div>
     </section>`;
 
@@ -348,7 +348,7 @@ export class View {
     nextGameButton.textContent = "Next Game";
     nextGameButton.id = "next-game-button";
     nextGameButton.className =
-      "font-bold text-white text-2xl mt-4 h-9 w-60 bg-blue-500 hover:bg-blue-400 rounded-xl";
+      "absolute bottom-12 left-1/2 transform -translate-x-1/2 font-bold text-white text-2xl mt-4 h-9 w-60 bg-blue-700 hover:bg-blue-600 rounded-xl";
     resultListElement.appendChild(nextGameButton);
   }
 
