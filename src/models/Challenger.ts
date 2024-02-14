@@ -57,7 +57,7 @@ export class Challenger implements Player {
   }
 
   public canDouble(): boolean {
-    return this.status === "Initial" && this.betAmount * 2 <= this.chips;
+    return this.status === "Initial" && this.betAmount <= this.chips;
   }
 
   public stand(): void {
