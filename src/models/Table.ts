@@ -73,7 +73,7 @@ export class Table {
       this.assignPlayerHands();
     } else if (this.getGamePhase() === "Acting") {
       this.setGamePhase("Evaluating");
-      this.evaluateWinner();
+      this.evaluateMatchResult();
     } else if (this.getGamePhase() === "Evaluating") {
       this.setGamePhase("Betting");
       this.resetTable();
@@ -81,41 +81,65 @@ export class Table {
   }
 
   //各チャレンジャーとディーラーの勝敗を判定する関数
-  private evaluateWinner(): void {
+  private evaluateMatchResult(): void {
     const dealer = getDealerInTable(this);
     const challengers = getChallengerInTable(this);
     for (let challenger of challengers) {
-      let result = "";
-      if (challenger.status === "Bust") result = "Lose";
-      else if (challenger.status === "Blackjack")
-        result = dealer.status === "Blackjack" ? "Draw" : "Win";
-      else if (dealer.status === "Bust") result = "Win";
-      else result = this.compareWithDealerHand(challenger, dealer);
-
+      const result = this.evaluateWinner(challenger, dealer);
       const exChallengerChips = challenger.chips + challenger.betAmount;
-      if (result === "Win") {
-        if (challenger.status === "Blackjack") {
-          challenger.chips =
-            exChallengerChips + Math.floor(challenger.betAmount * 1.5);
-        } else {
-          challenger.chips = exChallengerChips + challenger.betAmount;
-        }
-      } else if (result === "Lose")
+      challenger.chips = this.caluculateChallengerChips(
+        result,
+        challenger,
+        exChallengerChips
+      );
+      if (result === "Draw") challenger.chips = exChallengerChips;
+      else if (result === "Win") {
+        challenger.chips =
+          challenger.status === "Blackjack"
+            ? exChallengerChips + Math.floor(challenger.betAmount * 1.5)
+            : exChallengerChips + challenger.betAmount;
+      } else if (result === "Lose") {
         challenger.chips = exChallengerChips - challenger.betAmount;
-      else challenger.chips = exChallengerChips;
+      }
 
       const log = `${challenger.name}: ${result} ${exChallengerChips}→${challenger.chips}`;
       this.resultLog.push(log);
     }
   }
 
-  private compareWithDealerHand(
+  private evaluateWinner(
+    challenger: Challenger,
+    dealer: Dealer
+  ): "Win" | "Lose" | "Draw" {
+    if (challenger.status === "Blackjack")
+      return dealer.status === "Blackjack" ? "Draw" : "Win";
+    if (challenger.status === "Bust") return "Lose";
+    if (dealer.status === "Bust") return "Win";
+    return this.compareWithDealerHandScore(challenger, dealer);
+  }
+
+  private compareWithDealerHandScore(
     challenger: Challenger,
     dealer: Dealer
   ): "Win" | "Lose" | "Draw" {
     if (challenger.getHandScore() === dealer.getHandScore()) return "Draw";
     else if (challenger.getHandScore() > dealer.getHandScore()) return "Win";
     else return "Lose";
+  }
+
+  private caluculateChallengerChips(
+    result: string,
+    challenger: Challenger,
+    baseChips: number
+  ): number {
+    if (result === "Draw") return baseChips;
+    else if (result === "Win") {
+      return challenger.status === "Blackjack"
+        ? baseChips + Math.floor(challenger.betAmount * 1.5)
+        : baseChips + challenger.betAmount;
+    } else {
+      return baseChips - challenger.betAmount;
+    }
   }
 
   private resetTable() {
