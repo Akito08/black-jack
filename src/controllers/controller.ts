@@ -153,7 +153,7 @@ export class Controller {
       this.view.highlightCurrentPlayer(bot);
       await sleep(1000);
       while (!bot.isTurnEnd) {
-        this.table.botAct(bot);
+        this.table.botMakeAction(bot);
         this.view.updateChallengerInfoDisplay(bot);
         await sleep(1000);
       }
@@ -177,7 +177,7 @@ export class Controller {
 
     while (!dealer.isTurnEnd) {
       await sleep(1000);
-      this.table.dealerAct(dealer);
+      this.table.dealerMakeActioin(dealer);
       this.view.updateDealerInfoDisplay(dealer);
     }
     this.view.highlightCurrentPlayer(dealer);

@@ -55,13 +55,15 @@ export class Table {
     }
   }
 
-  //後でBasic Strategyを採用した動きに変える
-  public botAct(bot: BasicStrategyBot | PerfectStrategyBot) {
-    if (bot.getHandScore() <= 16) bot.hit(this.deck.drawOne());
+  public botMakeAction(bot: BasicStrategyBot | PerfectStrategyBot) {
+    const dealer = getDealerInTable(this);
+    const action = bot.decideAction(dealer.getHandScore());
+    if (action === "Double") bot.double(this.deck.drawOne());
+    else if (action === "Hit") bot.hit(this.deck.drawOne());
     else bot.stand();
   }
 
-  public dealerAct(dealer: Dealer) {
+  public dealerMakeActioin(dealer: Dealer) {
     if (dealer.getHandScore() <= 16) dealer.hit(this.deck.drawOne());
     else dealer.stand();
   }
