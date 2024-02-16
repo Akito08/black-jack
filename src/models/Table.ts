@@ -100,7 +100,6 @@ export class Table {
       this.assignPlayerHands();
       const dealer = getDealerInTable(this);
       dealer.flipCard();
-      console.log(this.getCardCountingTotal());
     } else if (this.getGamePhase() === "Acting") {
       this.setGamePhase("Evaluating");
       this.evaluateMatchResult();
