@@ -7,10 +7,13 @@ const gameType = document.getElementById(
 const startButton = document.getElementById("start-button") as HTMLElement;
 startButton.addEventListener("click", () => {
   if (userName.value.length > 30) {
-    alert("15文字以内で名前を入力して下さい");
+    alert("名前を15文字以内で入力して下さい");
     userName.value = "";
     return;
   }
-  if (userName.value.length === 0) userName.value = "User1";
+  if (userName.value.length === 0) {
+    alert("名前を入力してください");
+    return;
+  }
   new Controller(gameType.value, userName.value);
 });
