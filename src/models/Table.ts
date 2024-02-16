@@ -10,6 +10,7 @@ import {
 } from "../utils/helper";
 import { GamePhase } from "../types";
 import { Challenger } from "./Challenger";
+import { Card } from "./Card";
 
 export class Table {
   readonly gameType: string;
@@ -17,7 +18,8 @@ export class Table {
   private gamePhase: GamePhase;
   public resultLog: string[];
   public deck: Deck;
-  public players: (User | BasicStrategyBot | Dealer)[];
+  private cardCountingScore: number;
+  public players: (User | BasicStrategyBot | PerfectStrategyBot | Dealer)[];
 
   constructor(gameType: string, userName: string) {
     this.gameType = gameType;
@@ -25,6 +27,7 @@ export class Table {
     this.deck = new Deck();
     this.gamePhase = "Betting";
     this.resultLog = [];
+    this.cardCountingScore = 0;
     this.players = [];
     this.players.push(new BasicStrategyBot("Bot1"));
     this.players.push(new User(userName));
@@ -40,41 +43,64 @@ export class Table {
     this.gamePhase = gamePhase;
   }
 
-  public allBotsMakeBet(): void {
+  public getCardCountingTotal(): number {
+    return this.cardCountingScore;
+  }
+
+  public updateCountingScore(card: Card): void {
+    this.cardCountingScore += card.getCountingNumber();
+  }
+
+  public botsMakeBet(): void {
     const bots = getAllBotsInTable(this);
     for (let bot of bots) {
-      bot.makeBet();
+      bot.makeBet(this.getCardCountingTotal());
     }
   }
 
   public assignPlayerHands(): void {
     for (let player of this.players) {
-      player.drawCard(this.deck.drawOne());
-      player.drawCard(this.deck.drawOne());
-      if (player.isBlackjack()) player.setBlackjack();
+      for (let i = 0; i < 2; i++) {
+        const card = this.deck.drawOne();
+        player.drawCard(card);
+        this.updateCountingScore(card);
+      }
+      if (!(player instanceof Dealer) && player.isBlackjack()) {
+        player.setBlackjack();
+      }
     }
   }
 
   public botMakeAction(bot: BasicStrategyBot | PerfectStrategyBot) {
     const dealer = getDealerInTable(this);
     const action = bot.decideAction(dealer.getHandScore());
-    if (action === "Double") bot.double(this.deck.drawOne());
-    else if (action === "Hit") bot.hit(this.deck.drawOne());
-    else bot.stand();
+    if (action === "Double") {
+      const card = this.deck.drawOne();
+      bot.double(card);
+      this.updateCountingScore(card);
+    } else if (action === "Hit") {
+      const card = this.deck.drawOne();
+      bot.hit(card);
+      this.updateCountingScore(card);
+    } else bot.stand();
   }
 
   public dealerMakeActioin(dealer: Dealer) {
-    if (dealer.getHandScore() <= 16) dealer.hit(this.deck.drawOne());
-    else dealer.stand();
+    if (dealer.getHandScore() <= 16) {
+      const card = this.deck.drawOne();
+      dealer.hit(card);
+      this.updateCountingScore(card);
+    } else dealer.stand();
   }
 
   public processGamePhase() {
     if (this.getGamePhase() === "Betting") {
       this.setGamePhase("Acting");
-      this.allBotsMakeBet();
+      this.botsMakeBet();
       this.assignPlayerHands();
       const dealer = getDealerInTable(this);
       dealer.flipCard();
+      console.log(this.getCardCountingTotal());
     } else if (this.getGamePhase() === "Acting") {
       this.setGamePhase("Evaluating");
       this.evaluateMatchResult();
@@ -96,15 +122,6 @@ export class Table {
         challenger,
         exChallengerChips
       );
-      if (result === "Draw") challenger.chips = exChallengerChips;
-      else if (result === "Win") {
-        challenger.chips =
-          challenger.status === "Blackjack"
-            ? exChallengerChips + Math.floor(challenger.betAmount * 1.5)
-            : exChallengerChips + challenger.betAmount;
-      } else if (result === "Lose") {
-        challenger.chips = exChallengerChips - challenger.betAmount;
-      }
 
       const log = `${challenger.name}: ${result} ${exChallengerChips}→${challenger.chips}`;
       this.resultLog.push(log);

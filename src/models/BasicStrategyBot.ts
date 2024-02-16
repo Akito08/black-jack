@@ -9,9 +9,9 @@ export class BasicStrategyBot extends Challenger implements Player, Bot {
     super(name);
   }
   public makeBet(): void {
-    if (this.chips - 100 >= 0) {
-      this.chips -= 100;
-      this.betAmount += 100;
+    if (this.chips - 50 >= 0) {
+      this.chips -= 50;
+      this.betAmount += 50;
     } else {
       this.betAmount = this.chips;
       this.chips = 0;

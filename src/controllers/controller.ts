@@ -75,6 +75,10 @@ export class Controller {
       "deal-button"
     ) as HTMLButtonElement;
     dealButton.addEventListener("click", () => {
+      if (user.betAmount === 0) {
+        alert("賭け金を設定してください。");
+        return;
+      }
       this.gamePhaseController();
     });
 
@@ -110,6 +114,7 @@ export class Controller {
     hitButton.addEventListener("click", async () => {
       const card = this.deck.drawOne();
       user.hit(card);
+      this.table.updateCountingScore(card);
       this.view.updateChallengerInfoDisplay(user);
       if (user.isBust()) {
         await sleep(800);
@@ -128,6 +133,7 @@ export class Controller {
     doubleButton.addEventListener("click", async () => {
       const card = this.deck.drawOne();
       user.double(card);
+      this.table.updateCountingScore(card);
       this.view.updateChallengerInfoDisplay(user);
       await sleep(800);
       this.view.disableAllActionButtons();
@@ -180,8 +186,8 @@ export class Controller {
       this.table.dealerMakeActioin(dealer);
       this.view.updateDealerInfoDisplay(dealer);
     }
-    this.view.highlightCurrentPlayer(dealer);
     await sleep(1000);
+    this.view.highlightCurrentPlayer(dealer);
     this.gamePhaseController();
   }
 }

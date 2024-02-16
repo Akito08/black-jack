@@ -1,6 +1,6 @@
 import { Action } from "../types";
 
 export interface Bot {
-  makeBet(): void;
+  makeBet(cardCountingTotal?: number): void;
   decideAction(dealerUpcard: number): Action;
 }

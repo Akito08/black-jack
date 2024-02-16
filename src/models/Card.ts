@@ -20,4 +20,10 @@ export class Card {
 
     return Number(this.rank);
   }
+
+  getCountingNumber(): number {
+    if (this.getRankNumber() >= 2 && this.getRankNumber() <= 6) return 1;
+    else if (this.getRankNumber() >= 7 && this.getRankNumber() <= 9) return 0;
+    else return -1;
+  }
 }

@@ -26,9 +26,11 @@ export class Deck {
       "K",
     ];
 
-    for (let suit of suits) {
-      for (let rank of ranks) {
-        this.cards.push(new Card(suit, rank));
+    for (let i = 0; i < 4; i++) {
+      for (let suit of suits) {
+        for (let rank of ranks) {
+          this.cards.push(new Card(suit, rank));
+        }
       }
     }
 

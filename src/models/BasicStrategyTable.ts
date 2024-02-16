@@ -1,5 +1,6 @@
 import { Action } from "../types";
 
+//手札に"A"が含まれていないとき
 export const hardHandStrategy: {
   [dealerUpCard: number]: { [action in Action]: number[] };
 } = {
@@ -55,6 +56,7 @@ export const hardHandStrategy: {
   },
 };
 
+//手札に"A"が含まれているとき
 export const softHandStrategy: {
   [dealerUpCard: number]: { [action in Action]: number[] };
 } = {
