@@ -336,7 +336,7 @@ export class View {
     this.root.innerHTML = `
     <section id="result-modal">
       <div
-      <div id="result-list" class="bg-white text-center h-1/2 w-1/2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 space-y-10 pt-14">
+      <div id="result-list" class="bg-white rounded-lg text-center h-1/2 w-1/2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 space-y-10 pt-14">
         
       </div>
     </section>`;
@@ -363,7 +363,7 @@ export class View {
   renderGameOverModal() {
     this.root.innerHTML = `
     <section id="game-over-modal">
-      <div class="bg-white text-center h-1/3 w-1/2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div class="bg-white text-center rounded-lg h-1/3 w-1/2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div class="text-4xl font-bold absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">GAME OVER</div>
       </div>
     </section>`;
