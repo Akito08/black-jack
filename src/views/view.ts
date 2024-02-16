@@ -269,28 +269,34 @@ export class View {
     }
   }
 
-  public updatePlayerStatus(player: User | BasicStrategyBot | Dealer) {
+  public updatePlayerStatus(
+    player: User | BasicStrategyBot | PerfectStrategyBot | Dealer
+  ) {
     const playerStatusElement = document.getElementById(
       `${player.name.toLowerCase()}-status`
     ) as HTMLElement;
     playerStatusElement.innerHTML = `${player.status}`;
   }
 
-  private updateHandScore(player: User | BasicStrategyBot | Dealer) {
+  private updateHandScore(
+    player: User | BasicStrategyBot | PerfectStrategyBot | Dealer
+  ) {
     const playerHandScoreElement = document.getElementById(
       `${player.name.toLowerCase()}-hand-score`
     ) as HTMLElement;
     playerHandScoreElement.innerText = `HandScore: ${player.getHandScore()}`;
   }
 
-  private updateBetAmount(player: User | BasicStrategyBot) {
+  private updateBetAmount(
+    player: User | BasicStrategyBot | PerfectStrategyBot
+  ) {
     const playerBetAmountElement = document.getElementById(
       `${player.name.toLowerCase()}-bet-amount`
     ) as HTMLElement;
     playerBetAmountElement.innerText = `Bet: ${player.betAmount}`;
   }
 
-  private updateChips(player: User | BasicStrategyBot) {
+  private updateChips(player: User | BasicStrategyBot | PerfectStrategyBot) {
     const playerChipsElement = document.getElementById(
       `${player.name.toLowerCase()}-chips`
     ) as HTMLElement;

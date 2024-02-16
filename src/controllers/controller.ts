@@ -1,3 +1,4 @@
+import { User } from "../models/User";
 import { Table } from "../models/Table";
 import { Deck } from "../models/Deck";
 import { View } from "../views/view";
@@ -107,7 +108,7 @@ export class Controller {
   }
 
   setupHitAction() {
-    const user = getUserInTable(this.table);
+    const user = getUserInTable(this.table) as User;
     const hitButton = document.getElementById(
       "hit-button"
     ) as HTMLButtonElement;
