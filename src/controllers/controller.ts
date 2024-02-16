@@ -33,8 +33,8 @@ export class Controller {
       this.view.renderActingPage();
       const user = getUserInTable(this.table);
       if (user.isBlackjack()) {
-        await sleep(800);
         this.view.disableAllActionButtons();
+        await sleep(800);
         this.view.highlightCurrentPlayer(user);
         this.processBotAndDealerTurn();
         return;
@@ -100,8 +100,8 @@ export class Controller {
     standButton.addEventListener("click", async () => {
       user.stand();
       this.view.updatePlayerStatus(user);
-      await sleep(800);
       this.view.disableAllActionButtons();
+      await sleep(800);
       this.view.highlightCurrentPlayer(user);
       this.processBotAndDealerTurn();
     });
@@ -118,8 +118,8 @@ export class Controller {
       this.table.updateCountingScore(card);
       this.view.updateChallengerInfoDisplay(user);
       if (user.isBust()) {
-        await sleep(800);
         this.view.disableAllActionButtons();
+        await sleep(800);
         this.view.highlightCurrentPlayer(user);
         this.processBotAndDealerTurn();
       } else this.view.disableDoubleButton();
@@ -136,8 +136,8 @@ export class Controller {
       user.double(card);
       this.table.updateCountingScore(card);
       this.view.updateChallengerInfoDisplay(user);
-      await sleep(800);
       this.view.disableAllActionButtons();
+      await sleep(800);
       this.view.highlightCurrentPlayer(user);
       this.processBotAndDealerTurn();
     });
