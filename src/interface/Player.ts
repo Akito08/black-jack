@@ -14,4 +14,5 @@ export interface Player {
   isBust(): boolean;
   stand(): void;
   hit(card: Card): void;
+  resetState(): void;
 }
