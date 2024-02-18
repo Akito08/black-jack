@@ -27,7 +27,7 @@ export class Controller {
     this.setupBetActions();
   }
 
-  async gamePhaseController() {
+  public async gamePhaseController() {
     if (this.table.getGamePhase() === "Betting") {
       this.table.processGamePhase();
       this.view.renderActingPage();
@@ -92,7 +92,7 @@ export class Controller {
     });
   }
 
-  setupStandAction() {
+  private setupStandAction() {
     const user = getUserInTable(this.table);
     const standButton = document.getElementById(
       "stand-button"
@@ -107,7 +107,7 @@ export class Controller {
     });
   }
 
-  setupHitAction() {
+  private setupHitAction() {
     const user = getUserInTable(this.table) as User;
     const hitButton = document.getElementById(
       "hit-button"
@@ -126,7 +126,7 @@ export class Controller {
     });
   }
 
-  setupDoubleAction() {
+  private setupDoubleAction() {
     const user = getUserInTable(this.table);
     const doubleButton = document.getElementById(
       "double-button"
@@ -143,7 +143,7 @@ export class Controller {
     });
   }
 
-  setupNextGameButton() {
+  private setupNextGameButton() {
     const nextGameButton = document.getElementById(
       "next-game-button"
     ) as HTMLButtonElement;
