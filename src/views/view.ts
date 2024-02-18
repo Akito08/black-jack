@@ -6,7 +6,7 @@ import {
   getBasicStrategyBotInTable,
   getPerfectStrategyBotInTable,
 } from "../utils/helper";
-import { Player } from "../interface/Player";
+import { Player } from "../interfaces/Player";
 import { BasicStrategyBot } from "../models/BasicStrategyBot";
 import { PerfectStrategyBot } from "../models/PerfectStrategyBot";
 import { Dealer } from "../models/Dealer";

@@ -1,4 +1,4 @@
-import { Player } from "../interface/Player";
+import { Player } from "../interfaces/Player";
 import { ChallengerStatus } from "../types";
 import { Card } from "./Card";
 
