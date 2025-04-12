@@ -1,6 +1,6 @@
 import { Challenger } from "./Challenger";
-import { Player } from "../interface/Player";
-import { Bot } from "../interface/Bot";
+import { Player } from "../interfaces/Player";
+import { Bot } from "../interfaces/Bot";
 import { Action } from "../types";
 import { hardHandStrategy, softHandStrategy } from "./BasicStrategyTable";
 

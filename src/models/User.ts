@@ -1,5 +1,5 @@
 import { Challenger } from "./Challenger";
-import { Player } from "../interface/Player";
+import { Player } from "../interfaces/Player";
 
 export class User extends Challenger implements Player {
   constructor(username: string) {
