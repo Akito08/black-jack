@@ -263,8 +263,8 @@ export class View {
       let container = document.createElement("img");
       container.src = container.className = "h-32 w-24";
       container.src = card.isFront
-        ? `/trumps/${card.suit}${card.rank}.gif`
-        : "/trumps/Back1.gif";
+        ? `/images/${card.suit}${card.rank}.webp`
+        : "/images/Back1.webp";
       PlayerHandsElememnt.appendChild(container);
     }
   }
